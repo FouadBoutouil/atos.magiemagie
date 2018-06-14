@@ -19,7 +19,7 @@ public class PartieDAO {
 
     public List<Partie> listePartiesNonDemaree() {
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
-        Query query = em.createQuery("SELECT p FROM Partie p WHERE p.joueurs.etat= AND ");
+        Query query = em.createQuery("SELECT p FROM Partie p WHERE p.joueurs.etat ");
 
         return query.getResultList();
     }
