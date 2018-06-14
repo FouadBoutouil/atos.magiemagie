@@ -6,6 +6,7 @@
 package atos.magie;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,17 +27,18 @@ public class Carte implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    //private Ingredient typeCarte;
+    
     public enum Ingredient{
             crapaud, chauveSouris,licorne,lapisLazuli,mandradore
     }
-    
-    
     
     
     @JoinColumn
     @ManyToOne
     private Joueur joueurProprio;
     
+    @Column(nullable = false)
     private Ingredient ingredient;
     
     public Long getId() {

@@ -5,6 +5,7 @@
  */
 package atos.magiemagie.dao;
 
+import atos.magie.Joueur;
 import atos.magie.Partie;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -19,8 +20,9 @@ public class PartieDAO {
 
     public List<Partie> listePartiesNonDemaree() {
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
-        Query query = em.createQuery("SELECT p FROM Partie p WHERE p.joueurs.etat ");
-
+        Query query = em.createQuery("SELECT p FROM Partie EXCEPT select P FROM Partie p JOIN p.joueur jp.etat=gagne EXCEPT SELECT p FROM Partie p JOIN p.joueurs WHERE j.etat=alamain" );
+        query.setParameter("etat_gagné", Joueur.EtatJoueur.aLamain);
+        // mezme requete gagné
         return query.getResultList();
     }
 }

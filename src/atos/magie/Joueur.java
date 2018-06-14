@@ -46,6 +46,7 @@ public class Joueur implements Serializable {
         napaLaMain, aLamain, SommeilProfond, perdu
     }
     @Enumerated(EnumType.STRING)   // STOKER DANS LA BASE EN TEMPS QUE STRING
+    @Column(nullable = false)
     private EtatJoueur etat;
     
     @JoinColumn

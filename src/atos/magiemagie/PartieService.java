@@ -14,13 +14,11 @@ import java.util.List;
  * @author Administrateur
  */
 
-
 public class PartieService {
     
     private PartieDAO dao = new PartieDAO();
     
     public List<Partie> listePartiesNonDemaree(){
-        return dao.listePartiesNonDemaree();
-        
+        return dao.listePartiesNonDemaree();        
     }   
 }
