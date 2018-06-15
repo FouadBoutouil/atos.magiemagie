@@ -6,7 +6,6 @@
 package atos.magiemagie.dao;
 
 import atos.magie.Joueur;
-import com.sun.imageio.plugins.jpeg.JPEG;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -20,7 +19,7 @@ public class JoueurDAO {
 
     public Joueur rechercherParPseudo(String pseudo) {
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
-        Query query = em.createNamedQuery("");
+        Query query = em.createQuery("SELECT j FROM Joueur j WHERE j.pseudo = :lepseudo");
         query.setParameter("lepseudo", pseudo);
         List<Joueur> joueursTrouves = query.getResultList();
 
@@ -33,7 +32,7 @@ public class JoueurDAO {
 
     public long ordrerechercheOrdreNouveauJoueur(long partieId) {
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
-        Query query = em.createQuery("SELECT FROM WHERE p.id =:idPartie");
+        Query query = em.createQuery("SELECT Max(j.ordre) FROM Joueur j WHERE j.partieNow.id =:idPartie");
         query.setParameter("idPartie", partieId);
 
         Object res = query.getSingleResult();

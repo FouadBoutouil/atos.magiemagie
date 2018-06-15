@@ -22,8 +22,8 @@ public class JoueurServiceTest {
     @Test
     public void rejoindrePartieOK(){
         
-        partiService.creerNouvellePartie("partie 1");
-        service.rejoindrePartie("thomas", "blabla", 0);
+        Partie particree = partiService.creerNouvellePartie("partie 1");
+        service.rejoindrePartie("thomas", "blabla", particree.getId() );
     
     }
        

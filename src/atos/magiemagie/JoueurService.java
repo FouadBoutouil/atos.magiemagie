@@ -29,6 +29,8 @@ public class JoueurService {
             // le joueur n'exsiste pas encore
             joueur = new Joueur();
             joueur.setPseudo(pseudo);
+            joueur.setNbrPartieGagne(0l);
+            joueur.setNbrPartieJouee(0l);
         }
         joueur.setAvatar(avatar);
         joueur.setEtat(Joueur.EtatJoueur.napaLaMain);
@@ -39,9 +41,9 @@ public class JoueurService {
         joueur.setPartieNow(partie);  // renvoi la partie actuelle
         List<Joueur> listeJoueurs = partie.getJoueurs();
         listeJoueurs.add(joueur);
+        
         if (joueur.getId()== null) {
-            dao.ajouter(joueur);
-            
+            dao.ajouter(joueur);  
         }else{
             dao.modifier(joueur);
         }

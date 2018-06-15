@@ -26,7 +26,7 @@ public class PartieService {
         Partie p = new Partie();
         p.setNom(nom);
         dao.ajouter(p);
-        return dao.rechercherPartieId(0);
+        return p;
        
     }
 

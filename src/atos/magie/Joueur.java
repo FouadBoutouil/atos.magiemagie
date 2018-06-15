@@ -116,6 +116,7 @@ public class Joueur implements Serializable {
     private String avatar;
     @Column(nullable = false)
     private Long nbrPartieGagne;
+    @Column(nullable = false)
     private Long nbrPartieJouee;
 
     
