@@ -33,9 +33,86 @@ public class Joueur implements Serializable {
 
     @OneToMany(mappedBy = "joueurProprio")
     private List<Carte> cartes = new ArrayList<>();
+    
+    private long ordre;
 
+    public long getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(long ordre) {
+        this.ordre = ordre;
+    }
     @Column(unique = true)
     private String pseudo;
+
+    public List<Carte> getCartes() {
+        return cartes;
+    }
+
+    public void setCartes(List<Carte> cartes) {
+        this.cartes = cartes;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Long getNbrPartieGagne() {
+        return nbrPartieGagne;
+    }
+
+    public void setNbrPartieGagne(Long nbrPartieGagne) {
+        this.nbrPartieGagne = nbrPartieGagne;
+    }
+
+    public Long getNbrPartieJouee() {
+        return nbrPartieJouee;
+    }
+
+    public void setNbrPartieJouee(Long nbrPartieJouee) {
+        this.nbrPartieJouee = nbrPartieJouee;
+    }
+
+    public EtatJoueur getEtat() {
+        return etat;
+    }
+
+    public void setEtat(EtatJoueur etat) {
+        this.etat = etat;
+    }
+
+    public Partie getPartieNow() {
+        return partieNow;
+    }
+
+    public void setPartieNow(Partie partieNow) {
+        this.partieNow = partieNow;
+    }
+
+    public List<Carte> getCarte() {
+        return carte;
+    }
+
+    public void setCarte(List<Carte> carte) {
+        this.carte = carte;
+    }
     private String avatar;
     @Column(nullable = false)
     private Long nbrPartieGagne;

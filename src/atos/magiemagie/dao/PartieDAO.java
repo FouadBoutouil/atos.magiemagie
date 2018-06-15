@@ -25,4 +25,19 @@ public class PartieDAO {
         // mezme requete gagné
         return query.getResultList();
     }
+
+    public Partie rechercherPartieId(long idPartie) {
+        EntityManager em =Persistence.createEntityManagerFactory("PU").createEntityManager();
+        return em.find(Partie.class, idPartie); // c'est comme une requete mais en plus simple 
+    }
+    
+    public void ajouter(Partie p) {
+        
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        em.getTransaction().begin();
+        em.persist(p);
+        em.getTransaction().commit();
+    }
+
 }
+    

@@ -21,4 +21,14 @@ public class PartieService {
     public List<Partie> listePartiesNonDemaree(){
         return dao.listePartiesNonDemaree(); //         
     }   
+
+    public Partie creerNouvellePartie(String nom) {
+        Partie p = new Partie();
+        p.setNom(nom);
+        dao.ajouter(p);
+        return dao.rechercherPartieId(0);
+       
+    }
+
+   
 }
