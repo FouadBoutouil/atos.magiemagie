@@ -30,7 +30,7 @@ public class Carte implements Serializable {
     //private Ingredient typeCarte;
     
     public enum Ingredient{
-            crapaud, chauveSouris,licorne,lapisLazuli,mandradore
+            crapaud, CHAUVESOURIS,licorne,lapisLazuli,mandradore
     }
     
     
@@ -44,7 +44,10 @@ public class Carte implements Serializable {
     public Long getId() {
         return id;
     }
-
+    
+    public void setIngredient( Ingredient ing){
+        this.ingredient= ing;
+    }
     public void setId(Long id) {
         this.id = id;
     }

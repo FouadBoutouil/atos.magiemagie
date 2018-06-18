@@ -106,9 +106,6 @@ public class Joueur implements Serializable {
         this.partieNow = partieNow;
     }
 
-    public List<Carte> getCarte() {
-        return carte;
-    }
 
     public void setCarte(List<Carte> carte) {
         this.carte = carte;

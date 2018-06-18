@@ -5,8 +5,13 @@
  */
 package atos.magiemagie.dao;
 
+import atos.magie.Carte;
 import atos.magie.Joueur;
+import static atos.magie.Joueur_.carte;
+import static atos.magie.Joueur_.cartes;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -32,7 +37,7 @@ public class JoueurDAO {
 
     public long ordrerechercheOrdreNouveauJoueur(long partieId) {
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
-        Query query = em.createQuery("SELECT Max(j.ordre) FROM Joueur j WHERE j.partieNow.id =:idPartie");
+        Query query = em.createQuery("SELECT Max(j.ordre)+1 FROM Joueur j WHERE j.partieNow.id =:idPartie");
         query.setParameter("idPartie", partieId);
 
         Object res = query.getSingleResult();
@@ -41,6 +46,16 @@ public class JoueurDAO {
         }
         return (long) res;
         //return (long)  query.getSingleResult();
+    }
+
+    public Joueur retournePremierJoueurDordreUnDansPartie(long idartie) {
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        Query query = em.createQuery("SELECT J from Joueur J Join Partie p WHERE J.ordre=1 AND p.id =:variable");
+        query.setParameter("variable", idartie);
+
+        Joueur res = (Joueur) query.getSingleResult();
+
+        return res;
     }
 
     public void ajouter(Joueur joueur) {
@@ -54,4 +69,13 @@ public class JoueurDAO {
     public void modifier(Joueur joueur) {
 
     }
+
+   
+    public Joueur rechercheJoueurParID(int idJoueur) {
+            
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        return em.find(Joueur.class,idJoueur);
+           
+    }
+
 }

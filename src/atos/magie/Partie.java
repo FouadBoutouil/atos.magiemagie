@@ -35,6 +35,10 @@ public class Partie implements Serializable {
 
     private String nom;
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     public String getNom() {
         return nom;
     }
