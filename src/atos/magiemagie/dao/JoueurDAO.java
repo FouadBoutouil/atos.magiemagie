@@ -67,7 +67,10 @@ public class JoueurDAO {
     }
 
     public void modifier(Joueur joueur) {
-
+EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        em.getTransaction().begin();
+        em.merge(joueur);
+        em.getTransaction().commit();
     }
 
    
