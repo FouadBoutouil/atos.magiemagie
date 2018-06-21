@@ -25,7 +25,7 @@ public class PartieService {
     private JoueurDAO daoJoueur = new JoueurDAO();
     Joueur joueur = new Joueur();   // pour l'utiliser dans passer joiueur suivant
 
-    public List<Partie> listePartiesNonDemaree() {
+    public List<Partie> listePartiesNonDemaree() {  
         return dao.listePartiesNonDemaree(); //         
     }
 
