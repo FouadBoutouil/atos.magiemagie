@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package atos.magie;
+package atos.magie.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,7 +32,7 @@ public class Carte implements Serializable {
     //private Ingredient typeCarte;
     
     public enum Ingredient{
-            crapaud, CHAUVESOURIS,licorne,lapisLazuli,mandradore
+            CRAPAUD, CHAUVESOURIS,LICORNE,LAPISLAZULI,MANDRAGORE
     }
     
     
@@ -38,6 +40,7 @@ public class Carte implements Serializable {
     @ManyToOne
     private Joueur joueurProprio;
     
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Ingredient ingredient;
     
@@ -47,6 +50,14 @@ public class Carte implements Serializable {
     
     public void setIngredient( Ingredient ing){
         this.ingredient= ing;
+    }
+
+    public Joueur getJoueurProprio() {
+        return joueurProprio;
+    }
+
+    public void setJoueurProprio(Joueur joueurProprio) {
+        this.joueurProprio = joueurProprio;
     }
     public void setId(Long id) {
         this.id = id;

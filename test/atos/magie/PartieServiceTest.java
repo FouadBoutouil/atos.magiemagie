@@ -6,7 +6,9 @@
 package atos.magie;
 
 
-import atos.magiemagie.PartieService;
+import atos.magie.service.JoueurService;
+import atos.magie.service.PartieService;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -18,13 +20,31 @@ public class PartieServiceTest {
     
       
     private PartieService servicePartie = new PartieService();
-    private JoueurServiceTest serviceJOueur = new JoueurServiceTest();
+    private JoueurService serviceJOueur = new JoueurService();
+//    
+//    @Test
+//    public void creerNouvellePartieTestOK() {
+//
+//        Partie partie = servicePartie.creerNouvellePartie("patrieDuMardi");
+//        joueurServiceTest joueur1 = new joueurServiceTest();
+//      
+//        // joueur1.rejoindrePartieOK();    //  cette ligne creer une partie partie 1 
+//        assertNotNull(partie.getId());
+//        
+//    }
+//   
     
-    @Test
-    public void creerNouvellePartieTestOK() {
+    @Test public void rejoindreParti(){
+        
+        //servicePartie.creerNouvellePartie("partie du mardi");
+        
+//       serviceJOueur.rejoindrePartie("joueur1","avatar", 1);
+//        serviceJOueur.rejoindrePartie("joueur2","ava", 1);
+//       serviceJOueur.rejoindrePartie("joueur18","tar", 1);
+//       
+       servicePartie.demarrerPartie(1);
+               
 
-        Partie partie = servicePartie.creerNouvellePartie("nom");
-        assertNotNull(partie.getId());    
     }
     
 }

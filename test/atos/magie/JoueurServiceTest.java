@@ -1,7 +1,9 @@
 package atos.magie;
 
-import atos.magiemagie.JoueurService;
-import atos.magiemagie.PartieService;
+import atos.magie.entity.Partie;
+import atos.magie.entity.Joueur;
+import atos.magie.service.JoueurService;
+import atos.magie.service.PartieService;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

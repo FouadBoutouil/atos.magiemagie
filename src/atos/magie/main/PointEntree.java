@@ -5,7 +5,7 @@
  */
 package atos.magie.main;
 
-import atos.magie.Partie;
+import atos.magie.entity.Partie;
 import atos.magie.service.JoueurService;
 import atos.magie.service.PartieService;
 import java.util.List;

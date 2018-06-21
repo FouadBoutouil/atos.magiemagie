@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package atos.magie;
+package atos.magie.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -118,7 +118,7 @@ public class Joueur implements Serializable {
 
     
     public enum EtatJoueur {
-        napaLaMain, aLamain, SommeilProfond, perdu
+        napaLaMain, aLamain, SommeilProfond, perdu, gagné
     }
     @Enumerated(EnumType.STRING)   // STOKER DANS LA BASE EN TEMPS QUE STRING
     @Column(nullable = false)

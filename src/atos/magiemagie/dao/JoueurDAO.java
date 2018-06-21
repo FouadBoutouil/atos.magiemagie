@@ -5,13 +5,8 @@
  */
 package atos.magiemagie.dao;
 
-import atos.magie.Carte;
-import atos.magie.Joueur;
-import static atos.magie.Joueur_.carte;
-import static atos.magie.Joueur_.cartes;
-import java.util.ArrayList;
+import atos.magie.entity.Joueur;
 import java.util.List;
-import java.util.Random;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -21,6 +16,15 @@ import javax.persistence.Query;
  * @author Administrateur
  */
 public class JoueurDAO {
+
+    public Joueur rechercheJoueurQuiAlaMain(long idPartie) {
+       Joueur joueur = new Joueur();
+//        return joueur;
+
+        // LE REQUETE RECUPERE TOUS LES JOUEURS DE LA PARTIE ET RETOURNE CELUI QUI A LA MAIN ---------- ON CHERCHE DANS état
+    EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+    return joueur;
+    }
 
     public Joueur rechercherParPseudo(String pseudo) {
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
@@ -48,10 +52,11 @@ public class JoueurDAO {
         //return (long)  query.getSingleResult();
     }
 
-    public Joueur retournePremierJoueurDordreUnDansPartie(long idartie) {
+    public Joueur retournePremierJoueurDordreUnDansPartie(long idartie, long ordre) {
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
-        Query query = em.createQuery("SELECT J from Joueur J Join Partie p WHERE J.ordre=1 AND p.id =:variable");
+        Query query = em.createQuery("SELECT J from Joueur J Join Partie p WHERE J.ordre=:variable2 AND p.id =:variable");
         query.setParameter("variable", idartie);
+        query.setParameter("variable2", ordre);
 
         Joueur res = (Joueur) query.getSingleResult();
 
@@ -74,7 +79,7 @@ EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityMana
     }
 
    
-    public Joueur rechercheJoueurParID(int idJoueur) {
+    public Joueur rechercheJoueurParID(long idJoueur) {
             
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
         return em.find(Joueur.class,idJoueur);
