@@ -31,11 +31,12 @@ public class JoueurService  {
     public void distribuerCarte(long idJoueur, long nbrCarte) {
 
         Joueur joueurActuel = dao.rechercheJoueurParID(idJoueur); /// §§§§§§§§§§§§§§§§§
-        
+          Carte carteActuelle = new Carte();
+          CarteDAO daoCarte = new CarteDAO();
         //on rajoute la carte generée a chaque fois
-        for (int i = 0; i < nbrCarte; i++) {
+        for (int i = 0; i < nbrCarte-1; i++) {
             //joueur.setCartes();
-            Carte carteActuelle = new Carte();
+          
 
             Random r = new Random();
             int numeroCarte = r.nextInt(5);
@@ -66,18 +67,21 @@ public class JoueurService  {
             // on ajoute la carte genereé aléatoirement dans une liste qu'on affectera a la fin a joueur, cette list
             // represente sa main
             
-            CarteDAO daoCarte = new CarteDAO();
-            daoCarte.modifierCarte(carteActuelle);
             
+            carteActuelle.setJoueurProprio(joueurActuel);
+        }
             List<Carte> cartes =  joueurActuel.getCartes();
             cartes.add(carteActuelle);
-            carteActuelle.setJoueurProprio(joueurActuel);
-            joueurActuel.setCarte(cartes);
+//            carteActuelle.setJoueurProprio(joueurActuel);
+//            joueurActuel.setCarte(cartes);
             dao.modifier(joueurActuel);
             daoCarte.ajouterCarte(carteActuelle);
+            // 
+            
+            daoCarte.modifierCarte(carteActuelle);
         }
         // on affecte la liste finale generé aux joueurs
-    }
+    
     
     public Joueur rejoindrePartie(String pseudo, String avatar, long idPartie) {
         // recherche si le joueur exsiste deja 
