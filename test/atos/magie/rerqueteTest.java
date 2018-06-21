@@ -48,7 +48,7 @@ public class rerqueteTest {
 //        joueurSer.rejoindrePartie("premierJoueur","sonAvatar", 1);
 //        joueurSer.rejoindrePartie("deuxiemJoueur","sonAva", 1);
 //        joueurSer.rejoindrePartie("troisiempremierJoueur","atar", 1);
-        partieTe.demarrerPartie(1);
+//        partieTe.demarrerPartie(1);
 
     }
 
