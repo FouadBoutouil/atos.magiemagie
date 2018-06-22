@@ -6,6 +6,7 @@
  */
 package atos.magie.service;
 
+import atos.magie.entity.Carte;
 import atos.magie.entity.Joueur;
 import atos.magie.entity.Partie;
 import atos.magiemagie.dao.JoueurDAO;
@@ -25,7 +26,7 @@ public class PartieService {
     private JoueurDAO daoJoueur = new JoueurDAO();
     Joueur joueur = new Joueur();   // pour l'utiliser dans passer joiueur suivant
 
-    public List<Partie> listePartiesNonDemaree() {  
+    public List<Partie> listePartiesNonDemaree() {
         return dao.listePartiesNonDemaree(); //         
     }
 
@@ -68,12 +69,10 @@ public class PartieService {
         daoJoueur.modifier(monJoueur);
 
         // distribuer sept cartes au nhazard au joueurs
-        
         for (Joueur joueur : p.getJoueurs()) {
             joueurService.distribuerCarte(joueur.getId(), 7);
         }
-        
-        
+
         return p;
     }
 
@@ -130,6 +129,57 @@ public class PartieService {
         }
 
         //
+    }
+
+    //  le joueur 1 selectionne les carte a conbiner ( pour avoir le sort )
+    //  le joueur 1 selectionne sa cible 
+    public void jeterSort() {
+
+        // creer une fonction qui renvoi le joueur qui a la main (actuel) !== joueur suivant 
+        // fonction afficher ses cartes 
+        // voir si ya une combinaison possible  si oui choisir le joueur cible
+        //---- peut etre creer une fonction echanger carte
+    }
+
+    public void passerTour(long idPartie) {
+        JoueurService serv = new JoueurService();
+        // recupere le joeur qui a la main 
+        Joueur joueur = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
+        // ajoute et na plus la main et prends une carte    // joueur suivant ???????
+        joueur.setEtat(Joueur.EtatJoueur.napaLaMain);
+        // reçois une carte 
+        serv.distribuerCarte(joueur.getId(), 1);
+    }
+
+    public void listerJoueuretLeurCarte(long idPartie) {
+        // recupere la liste des joueur de la partie 
+        // boucle for américain d
+// verifie l'état pour afficher 
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
+        Joueur joueurNow = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
+        // recupere liste joueur
+        List<Joueur> joueurNimportequi = maPartie.getJoueurs();
+        // liste des joueur qui n'ont pas la main 
+        joueurNimportequi.remove(joueurNow);
+        List<Carte> main = dao.afficheMain(joueurNow.getId());
+        // affiche joueur de la table 
+        System.out.println(" Voici tous joueurs de cette table : ");
+        for (int i = 2; i < joueurNimportequi.size(); i++) {
+            System.out.println("cartes" + "J1" + joueurNimportequi.get(i).getPseudo() + "Il a :" + joueurNimportequi.get(i).getCartes().size());
+        }
+
+        // affiche le joueur qui a la main et ses cartes
+        System.out.println("c'est votre tour  : " + joueurNow.getPseudo() + " Vous avez  : " + joueurNow.getCartes().size() + " cartes");
+        for (int i = 0; i < main.size(); i++) {
+            System.out.println(main.get(i).getIngredient());
+        }
+        // boucle pour aficher les joueur et le nombre de carte de chacun  
+        System.err.println("-_-_-_-_-_-_-LA TABLE-_-_-_-_-_-_");   /// ???????????????????
+        for (int i = 0; i < joueurNimportequi.size(); i++) {
+            // affiche pour un joueur pseudo et nombre de carte 
+            System.out.println("Nom Joueur " + joueurNimportequi.get(i).getPseudo() + " nombre de carte : " + joueurNimportequi.get(i).getCartes().size());
+        }
+
     }
 
 }
