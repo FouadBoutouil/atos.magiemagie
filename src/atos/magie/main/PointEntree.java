@@ -57,6 +57,7 @@ public class PointEntree {
                     long idPartieClavier = scan.nextLong();
                     joueurService.rejoindrePartie(pseudoClavier, avatarClavier, idPartieClavier);
                     System.out.println("Bienvennue dans la partie   (^__^) !!");
+                    ecranJeux(idPartieClavier,pseudoClavier);
                     break;
                 case "4":
                      System.out.print("Veuillez entrez  le numero de la partie :");
@@ -82,5 +83,15 @@ public class PointEntree {
 
         PointEntree m = new PointEntree();
         m.menuPrincipal();
+    }
+
+    private void ecranJeux(long idPartieClavier, String pseudoClavier) {
+        // recup id de moi meme
+        long monid =1L;
+        while (true) {
+            // recherche l'id joueur qui a la main
+           
+            
+        }
     }
 }
