@@ -24,11 +24,72 @@ import javax.persistence.Persistence;
  * @author Administrateur
  */
 public class PartieService {
+
     private CarteDAO carteDao = new CarteDAO();
     private PartieDAO dao = new PartieDAO();
     private JoueurDAO daoJoueur = new JoueurDAO();
+
     Joueur joueur = new Joueur();   // pour l'utiliser dans passer joiueur suivant
     // pour la partie choix de sort 
+
+    // le joueur prend 1 carte(au hasard) chez tous ses adversaires
+    // on a la partie actuelle et on le joueur actuel, donc on doit recuperer les cartes des joueurs dans une liste 
+    // on aplique un meme traitement a tous le joueurs ( boucle ) 
+    // on prends une carte au hazard ( random ) on la rajoute a la main du joueur actuelle et on suprimme de la main de l'autre joueur 
+    // on oublie pas la PERSISTANCE dans la base de donnée pask il ya une supression et une mise a jour
+    private void invisible(long idPartie) {
+        Joueur jouerLanceurDeSort = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
+        List<Carte> maMain = jouerLanceurDeSort.getCartes();
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
+
+        for (Joueur j : maPartie.getJoueurs()) {
+
+            // c'est de la triche mais on prends tjr la premiere carte
+            Carte car = j.getCartes().get(0);
+            maMain.add(car);
+            car.setJoueurProprio(jouerLanceurDeSort);
+
+            j.getCartes().remove(0);
+            carteDao.modifierCarte(car);
+        }
+    }
+
+    private void divine(long idPartie) {
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
+        for (Joueur j : maPartie.getJoueurs() ) {
+            afficheMain(idPartie);   
+        }
+    }
+
+    private void afficheMain(long idPartie) {
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
+        List<Joueur> maTable = maPartie.getJoueurs();
+        // boucle parcours les joueurs de la table
+        for (Joueur j : maTable) {
+            List<Carte> mainJoueur = j.getCartes();
+            System.out.print(" Voici les cartes de :"+j.getPseudo()+" ");
+            // Boucle parcours les carte d'un meme joueur
+            for (Carte c : mainJoueur) {
+                System.out.print(" "+c.getIngredient()+" ");
+            }
+        }
+    }
+
+    private void dodo(long idPartie, long idJoueurCible) {
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
+        Joueur victime = dao.rechercherJoueurParID(idJoueurCible);
+        victime.setEtat(Joueur.EtatJoueur.SommeilProfond);
+    }
+
+    private void hypnotise() {
+        
+    }
+
+    private void volerCarte() {
+        //volerCarteDao();
+    }
+
+    
 
     public enum Sort {
         INVISIBILITE, PHILTRE_DAMOUR, HYPNOSE, DIVINATION, SOMMEIL_PROFOND
@@ -141,14 +202,6 @@ public class PartieService {
 
     //  le joueur 1 selectionne les carte a conbiner ( pour avoir le sort )
     //  le joueur 1 selectionne sa cible 
-    public void jeterSort() {
-
-        // creer une fonction qui renvoi le joueur qui a la main (actuel) !== joueur suivant 
-        // fonction afficher ses cartes 
-        // voir si ya une combinaison possible  si oui choisir le joueur cible
-        //---- peut etre creer une fonction echanger carte
-    }
-
     public void passerTour(long idPartie) {
         JoueurService serv = new JoueurService();
         // recupere le joeur qui a la main 
@@ -189,6 +242,8 @@ public class PartieService {
         }
 
     }
+    
+    
 
     public void lancerSort(long idPartie, Carte.Ingredient carte1, Carte.Ingredient carte2) {
 
@@ -198,12 +253,12 @@ public class PartieService {
         Carte ingredient1 = new Carte();
         Carte ingredient2 = new Carte();
         //recuperer  joueur lanceur de sort
-        Partie maPartie = dao.rechercherPartieParID(idPartie);
-        Joueur jouerLanceurDeSort = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
+        //Partie maPartie = dao.rechercherPartieParID(idPartie);
+        //Joueur jouerLanceurDeSort = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
         // recuperer la liste des cibles 
-        List<Joueur> lesJoueurs = maPartie.getJoueurs();
+        //List<Joueur> lesJoueurs = maPartie.getJoueurs();
         // mettre les cartes d'un joueurs
-        List<Carte> maMain = jouerLanceurDeSort.getCartes();
+        //List<Carte> maMain = jouerLanceurDeSort.getCartes();
 
         // recuperer le choix de l'utilisateur
         choix = scan.nextLine();
@@ -284,43 +339,36 @@ public class PartieService {
         Sort sort_racourci = mapMagie.get(carte1.toString() + carte2.toString());
         switch (sort_racourci) {
 
-            // le joueur prend 1 carte(au hasard) chez tous ses adversaires
-            // on a la partie actuelle et on le joueur actuel, donc on doit recuperer les cartes des joueurs dans une liste 
-            // on aplique un meme traitement a tous le joueurs ( boucle ) 
-            // on prends une carte au hazard ( random ) on la rajoute a la main du joueur actuelle et on suprimme de la main de l'autre joueur 
-            // on oublie pas la PERSISTANCE dans la base de donnée pask il ya une supression et une mise a jour
+            //le joueur prend 1 carte(au hasard) chez tous ses adversaires
             case INVISIBILITE:
-                
-            // la meme action se repete sur tous les joueurs 
-
-//                for (Joueur j : maPartie.getJoueurs()) { 
-//
-//                    // c'est de la triche mais on prends tjr la premiere carte
-//                    Carte car = j.getCartes().get(0);
-//                    maMain.add(car);
-//                    car.setJoueurProprio(jouerLanceurDeSort);
-//                    
-//                    j.getCartes().remove(0);
-//                    carteDao.modifierCarte(car);
-//                }
-
+                invisible(idPartie);
                 break;
-
+            // le joueur de votre choix vous donne la moitié de ses cartes(au hasard). S’il ne possède qu’une carte il a perdu:
             case PHILTRE_DAMOUR:
                 break;
+            //le joueur peut voir les cartes de tous les autres joueurs
 
             case DIVINATION:
+                divine(idPartie);
                 break;
+            //le joueur échange une carte de son choix contre trois cartes(au hasard) de la victime qu’il choisit
 
             case HYPNOSE:
+                
+               hypnotise();
+               volerCarte();
                 break;
+            // le joueur choisit une victime qui ne pourra pas lancer de sorts pendant 2 tours ( onb a modifier pour un tour            // le joueur choisit une victime qui ne pourra pas lancer de sorts pendant 2 tours ( onb a modifier pour un tour
 
             case SOMMEIL_PROFOND:
+                 Scanner scann = new Scanner(System.in);
+                long idJoueurCible = scann.nextInt();
+                dodo(idPartie,idJoueurCible);
+                System.out.print("Le joueur dort profondement");
                 break;
         }
     }
-    
-    
+
     public void SelectionIngredient() {
 
     }
