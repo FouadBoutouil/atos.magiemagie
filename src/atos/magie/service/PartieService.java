@@ -9,22 +9,30 @@ package atos.magie.service;
 import atos.magie.entity.Carte;
 import atos.magie.entity.Joueur;
 import atos.magie.entity.Partie;
+import atos.magiemagie.dao.CarteDAO;
 import atos.magiemagie.dao.JoueurDAO;
 import atos.magiemagie.dao.PartieDAO;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 
 /**
  *
  * @author Administrateur
  */
 public class PartieService {
-
+    private CarteDAO carteDao = new CarteDAO();
     private PartieDAO dao = new PartieDAO();
     private JoueurDAO daoJoueur = new JoueurDAO();
     Joueur joueur = new Joueur();   // pour l'utiliser dans passer joiueur suivant
+    // pour la partie choix de sort 
+
+    public enum Sort {
+        INVISIBILITE, PHILTRE_DAMOUR, HYPNOSE, DIVINATION, SOMMEIL_PROFOND
+    }
 
     public List<Partie> listePartiesNonDemaree() {
         return dao.listePartiesNonDemaree(); //         
@@ -179,6 +187,141 @@ public class PartieService {
             // affiche pour un joueur pseudo et nombre de carte 
             System.out.println("Nom Joueur " + joueurNimportequi.get(i).getPseudo() + " nombre de carte : " + joueurNimportequi.get(i).getCartes().size());
         }
+
+    }
+
+    public void lancerSort(long idPartie, Carte.Ingredient carte1, Carte.Ingredient carte2) {
+
+        Scanner scan = new Scanner(System.in);   // pour utiliser les entrée clavier
+        String choix;
+
+        Carte ingredient1 = new Carte();
+        Carte ingredient2 = new Carte();
+        //recuperer  joueur lanceur de sort
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
+        Joueur jouerLanceurDeSort = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
+        // recuperer la liste des cibles 
+        List<Joueur> lesJoueurs = maPartie.getJoueurs();
+        // mettre les cartes d'un joueurs
+        List<Carte> maMain = jouerLanceurDeSort.getCartes();
+
+        // recuperer le choix de l'utilisateur
+        choix = scan.nextLine();
+        // fairte un switch qui par raport le nombre entrer il affecte a la carte qui sera passer en paramettre
+
+        switch (choix) {
+            case "0":
+                carte1 = Carte.Ingredient.CHAUVESOURIS;
+                break;
+
+            case "1":
+                carte1 = Carte.Ingredient.CRAPAUD;
+                break;
+
+            case "2":
+                carte1 = Carte.Ingredient.LAPISLAZULI;
+                break;
+
+            case "3":
+                carte1 = Carte.Ingredient.LICORNE;
+                break;
+
+            case "4":
+                carte1 = Carte.Ingredient.MANDRAGORE;
+                break;
+            default:
+                throw new RuntimeException("Veuillez rentrer un premier ingredient valide SVP !!!");
+        }
+        choix = scan.nextLine();
+        switch (choix) {
+            case "0":
+                carte2 = Carte.Ingredient.CHAUVESOURIS;
+                break;
+
+            case "1":
+                carte2 = Carte.Ingredient.CRAPAUD;
+                break;
+
+            case "2":
+                carte2 = Carte.Ingredient.LAPISLAZULI;
+                break;
+
+            case "3":
+                carte2 = Carte.Ingredient.LICORNE;
+                break;
+
+            case "4":
+                carte2 = Carte.Ingredient.MANDRAGORE;
+                break;
+            default:
+                throw new RuntimeException("Veuillez rentrer un deuxiéme ingredient valide SVP !!!");
+        }
+
+        //selectionner deux cartes parmi ses cartes dans le switch en haut 
+        // on creer une enum qui contient les sort  ( peut pas creeer une enum dans une fonction ???
+        // on cvreer une map ou les clé seront les ingredient et le choix(sera un objet de l'enum)
+        // ps : chaque sort sera present en double dans la base A B et B A qui auront le meme sort
+        // on aurrait pu utiliser un tableau ---> sort ( sort * ingredient 1 * ingredient 2  
+        Map<String, Sort> mapMagie = new HashMap<>();
+
+        mapMagie.put(Carte.Ingredient.LICORNE.toString() + Carte.Ingredient.CRAPAUD.toString(), Sort.INVISIBILITE);
+        mapMagie.put(Carte.Ingredient.CRAPAUD.toString() + Carte.Ingredient.LICORNE.toString(), Sort.INVISIBILITE);
+        // un sort 
+        mapMagie.put(Carte.Ingredient.LICORNE.toString() + Carte.Ingredient.MANDRAGORE.toString(), Sort.PHILTRE_DAMOUR);
+        mapMagie.put(Carte.Ingredient.MANDRAGORE.toString() + Carte.Ingredient.MANDRAGORE.toString(), Sort.PHILTRE_DAMOUR);
+        // un autre sort
+        mapMagie.put(Carte.Ingredient.CRAPAUD.toString() + Carte.Ingredient.LAPISLAZULI.toString(), Sort.HYPNOSE);
+        mapMagie.put(Carte.Ingredient.LAPISLAZULI.toString() + Carte.Ingredient.CRAPAUD.toString(), Sort.HYPNOSE);
+
+        mapMagie.put(Carte.Ingredient.LAPISLAZULI.toString() + Carte.Ingredient.CHAUVESOURIS.toString(), Sort.DIVINATION);
+        mapMagie.put(Carte.Ingredient.CHAUVESOURIS.toString() + Carte.Ingredient.CHAUVESOURIS.toString(), Sort.DIVINATION);
+
+        mapMagie.put(Carte.Ingredient.MANDRAGORE.toString() + Carte.Ingredient.CHAUVESOURIS.toString(), Sort.SOMMEIL_PROFOND);
+        mapMagie.put(Carte.Ingredient.CHAUVESOURIS.toString() + Carte.Ingredient.MANDRAGORE.toString(), Sort.SOMMEIL_PROFOND);
+
+        // on fait une boucle pour determiner l'action ou le sort a appliquer a partir des choix de l'utilisateur 
+        // idée du prof la ligne d'en bas mais on aurrais pu faire mapMagie.get( element) par la cle qui est le sort
+        Sort sort_racourci = mapMagie.get(carte1.toString() + carte2.toString());
+        switch (sort_racourci) {
+
+            // le joueur prend 1 carte(au hasard) chez tous ses adversaires
+            // on a la partie actuelle et on le joueur actuel, donc on doit recuperer les cartes des joueurs dans une liste 
+            // on aplique un meme traitement a tous le joueurs ( boucle ) 
+            // on prends une carte au hazard ( random ) on la rajoute a la main du joueur actuelle et on suprimme de la main de l'autre joueur 
+            // on oublie pas la PERSISTANCE dans la base de donnée pask il ya une supression et une mise a jour
+            case INVISIBILITE:
+                
+            // la meme action se repete sur tous les joueurs 
+
+//                for (Joueur j : maPartie.getJoueurs()) { 
+//
+//                    // c'est de la triche mais on prends tjr la premiere carte
+//                    Carte car = j.getCartes().get(0);
+//                    maMain.add(car);
+//                    car.setJoueurProprio(jouerLanceurDeSort);
+//                    
+//                    j.getCartes().remove(0);
+//                    carteDao.modifierCarte(car);
+//                }
+
+                break;
+
+            case PHILTRE_DAMOUR:
+                break;
+
+            case DIVINATION:
+                break;
+
+            case HYPNOSE:
+                break;
+
+            case SOMMEIL_PROFOND:
+                break;
+        }
+    }
+    
+    
+    public void SelectionIngredient() {
 
     }
 
