@@ -8,6 +8,7 @@ package atos.magie.main;
 import atos.magie.entity.Partie;
 import atos.magie.service.JoueurService;
 import atos.magie.service.PartieService;
+import atos.magiemagie.dao.PartieDAO;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,6 +20,8 @@ public class PointEntree {
 
     private PartieService partieService = new PartieService();
     private JoueurService joueurService = new JoueurService();
+    private PartieDAO daoPartie = new PartieDAO();
+    private Partie myPartie = new Partie();
 
     public void menuPrincipal() {
 
@@ -26,14 +29,13 @@ public class PointEntree {
         String choix;
         String nomPartierentreeClavier;
         do {
-
             System.out.println("Menu principal");
             System.out.println("---------------");
             System.out.println(" 1 - Liste parties non-démarées");
             System.out.println(" 2 - Creer partie");
             System.out.println(" 3 - Rejoindre partie");
-            System.out.println(" 4 - Démarer partie");
-            System.out.println(" 5- fffichage de la table");
+            System.out.println(" 4 - Démarer partie ET afficher table");
+            //System.out.println(" 5 - afficher table");
             System.out.println(" Q - Quitter");
             System.out.print("Votre choix > ");
 
@@ -41,7 +43,12 @@ public class PointEntree {
             switch (choix) {
                 case "1":
                     List<Partie> parties = partieService.listePartiesNonDemaree();
-                    System.out.println(parties);
+                    System.out.println("Voici les parties diponibles : ");
+                    List<Partie> partieDispo = daoPartie.listePartiesNonDemaree();
+                    for (Partie partie : partieDispo) {
+                        System.out.print(partie.toString());
+                        System.out.print(" OKOKOOOOoooooooooooooooooooooooooooooooooooooookokokok1");
+                    }
 
                     break;
                 case "2":
@@ -64,24 +71,29 @@ public class PointEntree {
                     System.out.print("Veuillez entrez  le numero de la partie :");
                     long numDemClavier = scan.nextLong();
                     partieService.demarrerPartie(numDemClavier);
+                    System.out.print("//////111111111111/////");
                     //partieService.demarrerPartie(1);
-                    System.out.print("Démarage réussie *-*-*-*-*-*-///////////**-*-*-*-*-*-*-*-*-*-");
-                    // 
-                    case "5":
-                    System.out.println("Veuillez entrez le nom de la partie :");
-                    Scanner aff = new Scanner(System.in);
-                    long idPartieClavierr = aff.nextLong();
-                    partieService.listerJoueuretLeurCarte(idPartieClavierr);
-                    break;
+                    System.out.println("*-*-*-*-*-*-/////Démarage réussie/////**-*-*-*-*-*-*-*-*-");
+                    // AFFICHAGE DE LA TABLE
+                    //case "5":
 
+//                    System.out.println("Veuillez entrez le nom de la table (partie)5:");
+//                    Scanner aff = new Scanner(System.in);
+//                    long idPartieClavierr = aff.nextLong();
+//                    partieService.listerJoueuretLeurCarte(idPartieClavierr);
+                    partieService.listerJoueuretLeurCarte(numDemClavier);
                     
+                    System.out.println("Clique sur [+] pour attaquer , [-] pour passer ");
+                    break;
                 case "Q":
                     break;
                 default:
                     System.out.println("choix pas disponible");
+
             }
         } while (choix.equals("Q") == false);
     }
+
     /**
      * @param args the command line arguments
      */
