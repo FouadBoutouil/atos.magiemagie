@@ -17,9 +17,9 @@ import java.util.Scanner;
  */
 public class PointEntree {
 
-    private PartieService partieService= new PartieService();
+    private PartieService partieService = new PartieService();
     private JoueurService joueurService = new JoueurService();
-   
+
     public void menuPrincipal() {
 
         Scanner scan = new Scanner(System.in);   // pour utiliser les entrée clavier
@@ -33,6 +33,7 @@ public class PointEntree {
             System.out.println(" 2 - Creer partie");
             System.out.println(" 3 - Rejoindre partie");
             System.out.println(" 4 - Démarer partie");
+            System.out.println(" 5- fffichage de la table");
             System.out.println(" Q - Quitter");
             System.out.print("Votre choix > ");
 
@@ -41,7 +42,7 @@ public class PointEntree {
                 case "1":
                     List<Partie> parties = partieService.listePartiesNonDemaree();
                     System.out.println(parties);
-                    
+
                     break;
                 case "2":
                     System.out.println("Veuillez entrez le nom de la partie :");
@@ -57,41 +58,43 @@ public class PointEntree {
                     long idPartieClavier = scan.nextLong();
                     joueurService.rejoindrePartie(pseudoClavier, avatarClavier, idPartieClavier);
                     System.out.println("Bienvennue dans la partie   (^__^) !!");
-                    ecranJeux(idPartieClavier,pseudoClavier);
+                    ecranJeux(idPartieClavier, pseudoClavier);
                     break;
                 case "4":
-                     System.out.print("Veuillez entrez  le numero de la partie :");
+                    System.out.print("Veuillez entrez  le numero de la partie :");
                     long numDemClavier = scan.nextLong();
                     partieService.demarrerPartie(numDemClavier);
                     //partieService.demarrerPartie(1);
                     System.out.print("Démarage réussie *-*-*-*-*-*-///////////**-*-*-*-*-*-*-*-*-*-");
+                    // 
+                    case "5":
+                    System.out.println("Veuillez entrez le nom de la partie :");
+                    Scanner aff = new Scanner(System.in);
+                    long idPartieClavierr = aff.nextLong();
+                    partieService.listerJoueuretLeurCarte(idPartieClavierr);
+                    break;
 
                     
-                    break;
                 case "Q":
                     break;
                 default:
                     System.out.println("choix pas disponible");
             }
-        } while (choix.equals("Q")== false);
+        } while (choix.equals("Q") == false);
     }
-
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
         PointEntree m = new PointEntree();
         m.menuPrincipal();
     }
 
     private void ecranJeux(long idPartieClavier, String pseudoClavier) {
         // recup id de moi meme
-        long monid =1L;
+        long monid = 1L;
         while (true) {
-            // recherche l'id joueur qui a la main
-           
-            
+            // recherche l'id joueur qui a la main                  
         }
     }
 }
