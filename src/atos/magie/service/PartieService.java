@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 
 /**
  *
@@ -28,7 +26,7 @@ public class PartieService {
     private CarteDAO carteDao = new CarteDAO();
     private PartieDAO dao = new PartieDAO();
     private JoueurDAO daoJoueur = new JoueurDAO();
-
+    private Scanner scan = new Scanner(System.in);
     Joueur joueur = new Joueur();   // pour l'utiliser dans passer joiueur suivant
     // pour la partie choix de sort 
 
@@ -56,8 +54,8 @@ public class PartieService {
 
     private void divine(long idPartie) {
         Partie maPartie = dao.rechercherPartieParID(idPartie);
-        for (Joueur j : maPartie.getJoueurs() ) {
-            afficheMain(idPartie);   
+        for (Joueur j : maPartie.getJoueurs()) {
+            afficheMain(idPartie);
         }
     }
 
@@ -67,29 +65,66 @@ public class PartieService {
         // boucle parcours les joueurs de la table
         for (Joueur j : maTable) {
             List<Carte> mainJoueur = j.getCartes();
-            System.out.print(" Voici les cartes de :"+j.getPseudo()+" ");
+            System.out.print(" Voici les cartes de :" + j.getPseudo() + " ");
             // Boucle parcours les carte d'un meme joueur
             for (Carte c : mainJoueur) {
-                System.out.print(" "+c.getIngredient()+" ");
+                System.out.print(" " + c.getIngredient() + " ");
             }
         }
     }
 
+    // cette fonction change lk'état du joueur a sommeil profond
     private void dodo(long idPartie, long idJoueurCible) {
         Partie maPartie = dao.rechercherPartieParID(idPartie);
         Joueur victime = dao.rechercherJoueurParID(idJoueurCible);
         victime.setEtat(Joueur.EtatJoueur.SommeilProfond);
     }
 
-    private void hypnotise() {
-        
+    private void hypnotise(long idJoueurLanceur, long idJoueurCible) {
+        Joueur joueurCIB = dao.rechercherJoueurParID(idJoueurCible);
+        Joueur joueurLAN = dao.rechercherJoueurParID(idJoueurLanceur);
+        for (int i = 7; i < 10; i++) {
+            volerCarte(idJoueurLanceur, idJoueurCible);
+        }
+
     }
 
-    private void volerCarte() {
+    private void volerCarte(long idJoueurLanceur, long idJoueurCible) {
+        Joueur joueurCIB = dao.rechercherJoueurParID(idJoueurCible);
+        Joueur joueurLan = dao.rechercherJoueurParID(idJoueurLanceur);
+        // variable juste pour avoir moins de code
+        int position = joueurCIB.getCartes().size();
+        //  ajouter 
+
+        // choisir une des deux !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //joueurLan.getCartes().set( position , joueurCIB.getCartes().get(0));
+        joueurLan.getCartes().add(position, carteDao.renvoiCarte(position, idJoueurCible));
+        // persister 
+        carteDao.modifierCarte(carteDao.renvoiCarte(position, idJoueurLanceur));
+
+        joueurCIB.getCartes().remove(0);
+        // supprime la premiere carte de l'ensemble des carte des joueurs dans la base de donnée
+        carteDao.supressionCarteJoueur(idJoueurCible, 0);
+
+        // fonction pour persisiter les données
         //volerCarteDao();
     }
-
     
+    private void filtreAmour(long idPartie) {
+        // recupere les deux joueurs 
+        // on aplique la fonction voler carte et le nombre de carte c'est modulo deux '
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
+        Joueur joueurLanc = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
+        // recupere l id du joueur cible par l'utilisateur rentree par lme clavier
+        System.out.println("!!!! Veuillez rentrer l' id de votre Victime !!!!");
+        long idJoueurCIB = scan.nextInt();
+        Joueur joueurCIB = dao.rechercherJoueurParID(idJoueurCIB);
+        long nombreDeCarte = joueurCIB.getCartes().size() % 2 ;
+        
+        for (int i = 0; nombreDeCarte < 10; i++) {
+             volerCarte(joueurLanc.getId(), idJoueurCIB);
+        }   
+    }
 
     public enum Sort {
         INVISIBILITE, PHILTRE_DAMOUR, HYPNOSE, DIVINATION, SOMMEIL_PROFOND
@@ -185,7 +220,6 @@ public class PartieService {
                 //--------------------------------------------------------- le cas ou il n'est pas en someil profond 
             } else {
                 if (joueurEvalue.getEtat() == Joueur.EtatJoueur.napaLaMain) {   //// partie copier a revoir !?§?§.?§§?§?§?§?§§??§
-
                     // *-*-*-*--**-*-*-
                     joueurEvalue.setEtat(Joueur.EtatJoueur.aLamain);
                     daoJoueur.modifier(joueurEvalue);
@@ -194,10 +228,8 @@ public class PartieService {
                 }
             }
             return;
-
         }
 
-        //
     }
 
     //  le joueur 1 selectionne les carte a conbiner ( pour avoir le sort )
@@ -242,8 +274,6 @@ public class PartieService {
         }
 
     }
-    
-    
 
     public void lancerSort(long idPartie, Carte.Ingredient carte1, Carte.Ingredient carte2) {
 
@@ -253,7 +283,7 @@ public class PartieService {
         Carte ingredient1 = new Carte();
         Carte ingredient2 = new Carte();
         //recuperer  joueur lanceur de sort
-        //Partie maPartie = dao.rechercherPartieParID(idPartie);
+        Partie maPartie = dao.rechercherPartieParID(idPartie);
         //Joueur jouerLanceurDeSort = daoJoueur.rechercheJoueurQuiAlaMain(idPartie);
         // recuperer la liste des cibles 
         //List<Joueur> lesJoueurs = maPartie.getJoueurs();
@@ -345,6 +375,7 @@ public class PartieService {
                 break;
             // le joueur de votre choix vous donne la moitié de ses cartes(au hasard). S’il ne possède qu’une carte il a perdu:
             case PHILTRE_DAMOUR:
+                filtreAmour(idPartie);
                 break;
             //le joueur peut voir les cartes de tous les autres joueurs
 
@@ -354,16 +385,27 @@ public class PartieService {
             //le joueur échange une carte de son choix contre trois cartes(au hasard) de la victime qu’il choisit
 
             case HYPNOSE:
-                
-               hypnotise();
-               volerCarte();
+
+                //Scanner scan = new Scanner(System.in);   // pour utiliser les entrée clavier
+                System.out.println("!!!!! Veuillez rentre l'identificateur de votre VICTIME !!!!");
+                // on recupere l id du joueur victime en le demandant a lutilisateur 
+                long idJoueurCIB = scan.nextInt();
+                // et on recupere l id du joueur lanceur dans la partie 
+
+                maPartie = dao.rechercherPartieParID(idPartie);
+                long idJoueurLanc = daoJoueur.rechercheJoueurQuiAlaMain(idPartie).getId();
+                Joueur joueurCIB = dao.rechercherJoueurParID(idJoueurCIB);
+
+                Joueur joueurLanc = dao.rechercherJoueurParID(idJoueurLanc);
+                hypnotise(idJoueurLanc, idJoueurCIB);
+                //volerCarte();
                 break;
             // le joueur choisit une victime qui ne pourra pas lancer de sorts pendant 2 tours ( onb a modifier pour un tour            // le joueur choisit une victime qui ne pourra pas lancer de sorts pendant 2 tours ( onb a modifier pour un tour
 
             case SOMMEIL_PROFOND:
-                 Scanner scann = new Scanner(System.in);
+                Scanner scann = new Scanner(System.in);
                 long idJoueurCible = scann.nextInt();
-                dodo(idPartie,idJoueurCible);
+                dodo(idPartie, idJoueurCible);
                 System.out.print("Le joueur dort profondement");
                 break;
         }
